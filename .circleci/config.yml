@@ -1,0 +1,30 @@
+version: 2.1
+jobs:
+  build-and-deploy:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - run:
+          name: Install pipenv and dependencies
+          command: pipenv install --dev
+      - run:
+          name: Create requirements.txt
+          command: pipenv lock -r > requirements.txt
+      - run:
+          name: Building Package
+          command: pipenv run python setup.py sdist bdist_wheel
+      - run:
+          name: Init .pypirc
+          command: |
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: Upload to PyPi
+          command: pipenv run twine upload dist/*
+workflows:
+  main:
+    jobs:
+      - build-and-deploy:
+          context: PyPi
