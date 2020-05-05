@@ -67,220 +67,201 @@ class Engine:
         ) or pd.api.types.is_scalar(arg)
 
     # Common Operations
-    @classmethod
-    def _equal_to(cls, a, b):
+    def _equal_to(self, a, b):
         """Check for non-strict equality ('==') with JS-style type coercion."""
-        if (cls._is_dataframe(a) and cls._is_dataframe_series_or_sequence(b)) or (
-            cls._is_series(a) and cls._is_series_or_scalar(b)
+        if (self._is_dataframe(a) and self._is_dataframe_series_or_sequence(b)) or (
+            self._is_series(a) and self._is_series_or_scalar(b)
         ):
             return a.eq(b)
-        elif (cls._is_dataframe(b) and cls._is_dataframe_series_or_sequence(a)) or (
-            cls._is_series(b) and cls._is_series_or_scalar(a)
+        elif (self._is_dataframe(b) and self._is_dataframe_series_or_sequence(a)) or (
+            self._is_series(b) and self._is_series_or_scalar(a)
         ):
             return b.eq(a)
         else:
             return a == b
 
-    @classmethod
-    def _strict_equal_to(cls, a, b):
+    def _strict_equal_to(self, a, b):
         """Check for strict equality ('===') including type equality."""
         if type(a) is type(b):
-            return cls._equal_to(a, b)
+            return self._equal_to(a, b)
         return False
 
-    @classmethod
-    def _not_equal_to(cls, a, b):
+    def _not_equal_to(self, a, b):
         """Check for non-strict inequality ('==') with JS-style type coercion."""
-        return not cls._equal_to(a, b)
+        return not self._equal_to(a, b)
 
-    @classmethod
-    def _not_strict_equal_to(cls, a, b):
+    def _not_strict_equal_to(self, a, b):
         """Check for strict inequality ('!==') including type inequality."""
-        return not cls._strict_equal_to(a, b)
+        return not self._strict_equal_to(a, b)
 
-    @classmethod
-    def _less_than(cls, a, b):
+    def _less_than(self, a, b):
         """Check that A is less then B (A < B)."""
-        if (cls._is_dataframe(a) and cls._is_dataframe_series_or_sequence(b)) or (
-            cls._is_series(a) and cls._is_series_or_scalar(b)
+        if (self._is_dataframe(a) and self._is_dataframe_series_or_sequence(b)) or (
+            self._is_series(a) and self._is_series_or_scalar(b)
         ):
             return a.lt(b)
-        elif (cls._is_dataframe(b) and cls._is_dataframe_series_or_sequence(a)) or (
-            cls._is_series(b) and cls._is_series_or_scalar(a)
+        elif (self._is_dataframe(b) and self._is_dataframe_series_or_sequence(a)) or (
+            self._is_series(b) and self._is_series_or_scalar(a)
         ):
             return b.gt(a)
         else:
             return a < b
 
-    @classmethod
-    def _less_than_or_equal_to(cls, a, b):
+    def _less_than_or_equal_to(self, a, b):
         """Check that A is less then or equal to B (A <= B)."""
-        if (cls._is_dataframe(a) and cls._is_dataframe_series_or_sequence(b)) or (
-            cls._is_series(a) and cls._is_series_or_scalar(b)
+        if (self._is_dataframe(a) and self._is_dataframe_series_or_sequence(b)) or (
+            self._is_series(a) and self._is_series_or_scalar(b)
         ):
             return a.le(b)
-        elif (cls._is_dataframe(b) and cls._is_dataframe_series_or_sequence(a)) or (
-            cls._is_series(b) and cls._is_series_or_scalar(a)
+        elif (self._is_dataframe(b) and self._is_dataframe_series_or_sequence(a)) or (
+            self._is_series(b) and self._is_series_or_scalar(a)
         ):
             return b.ge(a)
         else:
             return a <= b
 
-    @classmethod
-    def _greater_than(cls, a, b):
+    def _greater_than(self, a, b):
         """Check that A is greater then B (A > B)."""
-        return cls._less_than(b, a)
+        return self._less_than(b, a)
 
-    @classmethod
-    def _greater_than_or_equal_to(cls, a, b):
+    def _greater_than_or_equal_to(self, a, b):
         """Check that A is greater then or equal to B (A >= B)."""
-        return cls._less_than_or_equal_to(b, a)
+        return self._less_than_or_equal_to(b, a)
 
     @staticmethod
     def _truthy(a):
         """Check that argument evaluates to True according to core JsonLogic."""
         return bool(a)
 
-    @classmethod
-    def _falsy(cls, a):
+    def _falsy(self, a):
         """Check that argument evaluates to False according to core JsonLogic."""
-        return not cls._truthy(a)
+        return not self._truthy(a)
 
-    @classmethod
-    def _add(cls, a, b):
+    def _add(self, a, b):
         """Add B to A."""
         if (
-            cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-        ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+            self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
+        ) or (self._is_series(a) and self._is_series_or_scalar(b)):
             return a.add(b)
         elif (
-            cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-        ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+            self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
+        ) or (self._is_series(b) and self._is_series_or_scalar(a)):
             return b.radd(a)
         else:
             return a + b
 
-    @classmethod
-    def _sub(cls, a, b=None):
+    def _sub(self, a, b=None):
         """Subtract B from A. If only A is provided - return its arithmetic negative."""
         if b is None:
             return -a
         else:
             if (
-                cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-            ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+                self._is_dataframe(a)
+                and self._is_dataframe_series_sequence_or_scalar(b)
+            ) or (self._is_series(a) and self._is_series_or_scalar(b)):
                 return a.sub(b)
             elif (
-                cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-            ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+                self._is_dataframe(b)
+                and self._is_dataframe_series_sequence_or_scalar(a)
+            ) or (self._is_series(b) and self._is_series_or_scalar(a)):
                 return b.rsub(a)
             else:
                 return a - b
 
-    @classmethod
-    def _mul(cls, a, b):
+    def _mul(self, a, b):
         """Multiply A by B."""
         if (
-            cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-        ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+            self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
+        ) or (self._is_series(a) and self._is_series_or_scalar(b)):
             return a.mul(b)
         elif (
-            cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-        ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+            self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
+        ) or (self._is_series(b) and self._is_series_or_scalar(a)):
             return b.rmul(a)
         else:
             return a * b
 
-    @classmethod
-    def _truediv(cls, a, b):
+    def _truediv(self, a, b):
         """Divide A by B (float division)."""
         if (
-            cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-        ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+            self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
+        ) or (self._is_series(a) and self._is_series_or_scalar(b)):
             return a.truediv(b)
         elif (
-            cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-        ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+            self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
+        ) or (self._is_series(b) and self._is_series_or_scalar(a)):
             return b.rtruediv(a)
         else:
             return a / b
 
-    @classmethod
-    def _floordiv(cls, a, b):
+    def _floordiv(self, a, b):
         """Divide A by B (integer division)."""
         if (
-            cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-        ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+            self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
+        ) or (self._is_series(a) and self._is_series_or_scalar(b)):
             return a.floordiv(b)
         elif (
-            cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-        ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+            self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
+        ) or (self._is_series(b) and self._is_series_or_scalar(a)):
             return b.rfloordiv(a)
         else:
             return a // b
 
-    @classmethod
-    def _mod(cls, a, b):
+    def _mod(self, a, b):
         """Modulo of A by B."""
         if (
-            cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-        ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+            self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
+        ) or (self._is_series(a) and self._is_series_or_scalar(b)):
             return a.mod(b)
         elif (
-            cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-        ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+            self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
+        ) or (self._is_series(b) and self._is_series_or_scalar(a)):
             return b.rmod(a)
         else:
             return a % b
 
-    @classmethod
-    def _pow(cls, a, b):
+    def _pow(self, a, b):
         """A to the power B."""
         if (
-            cls._is_dataframe(a) and cls._is_dataframe_series_sequence_or_scalar(b)
-        ) or (cls._is_series(a) and cls._is_series_or_scalar(b)):
+            self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
+        ) or (self._is_series(a) and self._is_series_or_scalar(b)):
             return a.pow(b)
         elif (
-            cls._is_dataframe(b) and cls._is_dataframe_series_sequence_or_scalar(a)
-        ) or (cls._is_series(b) and cls._is_series_or_scalar(a)):
+            self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
+        ) or (self._is_series(b) and self._is_series_or_scalar(a)):
             return b.rpow(a)
         else:
             return a ** b
 
-    @classmethod
-    def _abs(cls, a):
+    def _abs(self, a):
         """Absolute value of A."""
-        if cls._is_dataframe_or_series(a):
+        if self._is_dataframe_or_series(a):
             return a.abs()
         else:
             return abs(a)
 
-    @classmethod
-    def _min(cls, *args):
+    def _min(self, *args):
         """Minimal value of sequence or unique element."""
-        if cls._is_sequence(args):
+        if self._is_sequence(args):
             return min(args)
         else:
             return min((args,))
 
-    @classmethod
-    def _min_reduce(cls, a):
+    def _min_reduce(self, a):
         """Returns the min along each axis"""
-        if cls._is_dataframe_or_series(a):
+        if self._is_dataframe_or_series(a):
             return a.min()
 
-    @classmethod
-    def _max(cls, *args):
+    def _max(self, *args):
         """Maximal value of sequence or unique element."""
-        if cls._is_sequence(args):
+        if self._is_sequence(args):
             return max(args)
         else:
             return max((args,))
 
-    @classmethod
-    def _max_reduce(cls, a):
+    def _max_reduce(self, a):
         """Returns the max along each axis."""
-        if cls._is_dataframe_or_series(a):
+        if self._is_dataframe_or_series(a):
             return a.max()
 
     @staticmethod
@@ -310,35 +291,36 @@ class Engine:
             return method(*args)
         return method
 
-    _common_operations = {
-        "==": _equal_to,
-        "===": _strict_equal_to,
-        "!=": _not_equal_to,
-        "!==": _not_strict_equal_to,
-        ">": _greater_than,
-        ">=": _greater_than_or_equal_to,
-        "<": _less_than,
-        "<=": _less_than_or_equal_to,
-        "!!": _truthy,
-        "!": _falsy,
-        "+": _add,
-        "-": _sub,
-        "*": _mul,
-        "/": _truediv,
-        "//": _floordiv,
-        "%": _mod,
-        "abs": _abs,
-        "min": _min,
-        "min_reduce": _min_reduce,
-        "max": _max,
-        "max_reduce": _max_reduce,
-        "method": _method,
-    }
+    @property
+    def _common_operations(self):
+        return {
+            "==": self._equal_to,
+            "===": self._strict_equal_to,
+            "!=": self._not_equal_to,
+            "!==": self._not_strict_equal_to,
+            ">": self._greater_than,
+            ">=": self._greater_than_or_equal_to,
+            "<": self._less_than,
+            "<=": self._less_than_or_equal_to,
+            "!!": self._truthy,
+            "!": self._falsy,
+            "+": self._add,
+            "-": self._sub,
+            "*": self._mul,
+            "/": self._truediv,
+            "//": self._floordiv,
+            "%": self._mod,
+            "abs": self._abs,
+            "min": self._min,
+            "min_reduce": self._min_reduce,
+            "max": self._max,
+            "max_reduce": self._max_reduce,
+            "method": self._method,
+        }
 
     # Logical operations
 
-    @classmethod
-    def _if(cls, data, *args):
+    def _if(self, data, *args):
         """
         Evaluate chainable conditions with multiple 'else if' support and return
         the corresponding evaluated argument based on the following patterns:
@@ -362,23 +344,21 @@ class Engine:
             (e.g.: from 0,1 to 2,3) and evaluate them.
         """
         for i in range(0, len(args) - 1, 2):
-            if cls._truthy(cls.jsonLogic(args[i], data)):
-                return cls.jsonLogic(args[i + 1], data)
+            if self._truthy(self.execute(args[i], data)):
+                return self.execute(args[i + 1], data)
         if len(args) % 2:
-            return cls.jsonLogic(args[-1], data)
+            return self.execute(args[-1], data)
         else:
             return None
 
-    @classmethod
-    def _iif(cls, data, a, b, c):
+    def _iif(self, data, a, b, c):
         """
         Evaluate ternary expression and return corresponding evaluated
         argument based on the following pattern: if (A) then {B} else {C}
         """
-        return cls._if(data, a, b, c)
+        return self._if(data, a, b, c)
 
-    @classmethod
-    def _and(cls, data, *args):
+    def _and(self, data, *args):
         """
         Evaluate and logically join arguments using the 'and' operator.
         If all arguments evaluate to True return the last (truthy) one (meaning
@@ -388,13 +368,12 @@ class Engine:
         """
         current = False
         for current in args:
-            current = cls.jsonLogic(current, data)
-            if cls._falsy(current):
+            current = self.execute(current, data)
+            if self._falsy(current):
                 return current  # First falsy argument
         return current  # Last argument
 
-    @classmethod
-    def _or(cls, data, *args):
+    def _or(self, data, *args):
         """
         Evaluate and logically join arguments using the 'or' operator.
         If at least one argument evaluates to True - return it
@@ -404,22 +383,23 @@ class Engine:
         """
         current = False
         for current in args:
-            current = cls.jsonLogic(current, data)
-            if cls._truthy(current):
+            current = self.execute(current, data)
+            if self._truthy(current):
                 return current  # First truthy argument
         return current  # Last argument
 
-    _logical_operations = {
-        "if": _if,
-        "?:": _iif,
-        "and": _and,
-        "or": _or,
-    }
+    @property
+    def _logical_operations(self):
+        return {
+            "if": self._if,
+            "?:": self._iif,
+            "and": self._and,
+            "or": self._or,
+        }
 
     # Scoped operations
 
-    @classmethod
-    def _filter(cls, data, scopedData, scopedLogic):
+    def _filter(self, data, scopedData, scopedLogic):
         """
         Filter 'scopedData' using the specified 'scopedLogic' argument.
 
@@ -448,17 +428,17 @@ class Engine:
         If 'scopedData' argument does not evaluate to an array, an empty array
         is returned.
         """
-        scopedData = cls.jsonLogic(scopedData, data)
-        if not cls._is_sequence(scopedData):
+        scopedData = self.execute(scopedData, data)
+        if not self._is_sequence(scopedData):
             return []
         return list(
             filter(
-                lambda datum: cls._truthy(cls.jsonLogic(scopedLogic, datum)), scopedData
+                lambda datum: self._truthy(self.execute(scopedLogic, datum)),
+                scopedData,
             )
         )
 
-    @classmethod
-    def _map(cls, data, scopedData, scopedLogic):
+    def _map(self, data, scopedData, scopedLogic):
         """
         Apply 'scopedLogic' argument to each 'scopedData' element.
 
@@ -485,13 +465,12 @@ class Engine:
         If 'scopedData' argument does not evaluate to an array, an empty array
         is returned.
         """
-        scopedData = cls.jsonLogic(scopedData, data)
-        if not cls._is_sequence(scopedData):
+        scopedData = self.execute(scopedData, data)
+        if not self._is_sequence(scopedData):
             return []
-        return list(map(lambda datum: cls.jsonLogic(scopedLogic, datum), scopedData))
+        return list(map(lambda datum: self.execute(scopedLogic, datum), scopedData))
 
-    @classmethod
-    def _reduce(cls, data, scopedData, scopedLogic, initial=None):
+    def _reduce(self, data, scopedData, scopedLogic, initial=None):
         """
         Apply 'scopedLogic' cumulatively to the elements in 'scopedData' argument,
         from left to right, so as to reduce the sequence it to a single value.
@@ -526,19 +505,18 @@ class Engine:
         If 'scopedData' argument does not evaluate to an array, the 'initial'
         value is returned.
         """
-        scopedData = cls.jsonLogic(scopedData, data)
-        if not cls._is_sequence(scopedData):
+        scopedData = self.execute(scopedData, data)
+        if not self._is_sequence(scopedData):
             return initial
         return reduce(
-            lambda accumulator, current: cls.jsonLogic(
+            lambda accumulator, current: self.execute(
                 scopedLogic, {"accumulator": accumulator, "current": current}
             ),
             scopedData,
             initial,
         )
 
-    @classmethod
-    def _all(cls, data, scopedData, scopedLogic):
+    def _all(self, data, scopedData, scopedLogic):
         """
         Check if 'scopedLogic' evaluates to a truthy value for all
         'scopedData' elements.
@@ -570,18 +548,17 @@ class Engine:
         N.B.: According to current core JsonLogic evaluation of 'scopedData'
         elements stops upon encountering first falsy value.
         """
-        scopedData = cls.jsonLogic(scopedData, data)
-        if not cls._is_sequence(scopedData):
+        scopedData = self.execute(scopedData, data)
+        if not self._is_sequence(scopedData):
             return False
         if len(scopedData) == 0:
             return False  # "all" of an empty set is false
         for datum in scopedData:
-            if cls._falsy(cls.jsonLogic(scopedLogic, datum)):
+            if self._falsy(self.execute(scopedLogic, datum)):
                 return False  # First falsy, short circuit
         return True  # All were truthy
 
-    @classmethod
-    def _none(cls, data, scopedData, scopedLogic):
+    def _none(self, data, scopedData, scopedLogic):
         """
         Check if 'scopedLogic' evaluates to a truthy value for none of
         'scopedData' elements.
@@ -614,10 +591,9 @@ class Engine:
         evaluated before returning the result. It does not stop at first truthy
         value.
         """
-        return len(cls._filter(data, scopedData, scopedLogic)) == 0
+        return len(self._filter(data, scopedData, scopedLogic)) == 0
 
-    @classmethod
-    def _some(cls, data, scopedData, scopedLogic):
+    def _some(self, data, scopedData, scopedLogic):
         """
         Check if 'scopedLogic' evaluates to a truthy value for at least
         one 'scopedData' element.
@@ -650,16 +626,18 @@ class Engine:
         evaluated before returning the result. It does not stop at first truthy
         value.
         """
-        return len(cls._filter(data, scopedData, scopedLogic)) > 0
+        return len(self._filter(data, scopedData, scopedLogic)) > 0
 
-    _scoped_operations = {
-        "filter": _filter,
-        "map": _map,
-        "reduce": _reduce,
-        "all": _all,
-        "none": _none,
-        "some": _some,
-    }
+    @property
+    def _scoped_operations(self):
+        return {
+            "filter": self._filter,
+            "map": self._map,
+            "reduce": self._reduce,
+            "all": self._all,
+            "none": self._none,
+            "some": self._some,
+        }
 
     # Data operations
 
@@ -690,8 +668,7 @@ class Engine:
         else:
             return data
 
-    @classmethod
-    def _missing(cls, data, *args):
+    def _missing(self, data, *args):
         """
         Check if one or more variables are missing from data object.
         Take either:
@@ -708,14 +685,13 @@ class Engine:
         times it will also be represented several times in the resulting array.
         """
         missing_array = []
-        var_names = args[0] if args and cls._is_sequence(args[0]) else args
+        var_names = args[0] if args and self._is_sequence(args[0]) else args
         for var_name in var_names:
-            if cls._var(data, var_name) in (None, ""):
+            if self._var(data, var_name) in (None, ""):
                 missing_array.append(var_name)
         return missing_array
 
-    @classmethod
-    def _missing_some(cls, data, need_count, args):
+    def _missing_some(self, data, need_count, args):
         """
         Check if at least some of the variables are missing from data object.
         Take two arguments:
@@ -731,82 +707,83 @@ class Engine:
         In that case all occurrences are counted towards the minimum number of
         variables to be present and may lead to unexpected results.
         """
-        missing_array = cls._missing(data, args)
+        missing_array = self._missing(data, args)
         if len(args) - len(missing_array) >= need_count:
             return []
         return missing_array
 
-    _data_operations = {"var": _var, "missing": _missing, "missing_some": _missing_some}
+    @property
+    def _data_operations(self):
+        return {
+            "var": self._var,
+            "missing": self._missing,
+            "missing_some": self._missing_some,
+        }
 
     # Unsupported operations
 
-    @classmethod
-    def _count(cls, *args):
+    def _count(self, *args):
         """Execute 'count' operation unsupported by core JsonLogic."""
-        if cls._is_dataframe_or_series(args):
+        if self._is_dataframe_or_series(args):
             return args.count()
         else:
             return sum(1 if a else 0 for a in args)
 
-    @classmethod
-    def _get(cls, a, b):
+    def _get(self, a, b):
         """Execute 'get' operation on DataFrame or Dictionary or return None."""
-        if cls._is_dataframe(a) or cls._is_dictionary(a):
+        if self._is_dataframe(a) or self._is_dictionary(a):
             return a.get(b)
         else:
             return None
 
-    @classmethod
-    def _query(cls, a, b):
+    def _query(self, a, b):
         """Execute 'query' operation DataFrame or return None."""
-        if cls._is_dataframe(a):
+        if self._is_dataframe(a):
             return a.query(b)
         else:
             return None
 
-    @classmethod
-    def _set_index(cls, a, b):
+    def _set_index(self, a, b):
         """Execute 'set_index' operation DataFrame or return None."""
-        if cls._is_dataframe(a):
+        if self._is_dataframe(a):
             return a.set_index(b)
         else:
             return None
 
-    _unsupported_operations = {
-        "count": _count,
-        "get": _get,
-        "query": _query,
-        "set_index": _set_index,
-    }
+    @property
+    def _unsupported_operations(self):
+        return {
+            "count": self._count,
+            "get": self._get,
+            "query": self._query,
+            "set_index": self._set_index,
+        }
 
     # Main Logic
 
-    @classmethod
-    def _is_logic(cls, logic):
+    def _is_logic(self, logic):
         """
         Determine if specified object is a JsonLogic rule or not.
         A JsonLogic rule is a dictionary with exactly one key.
         An array of JsonLogic rules is not considered a rule itself.
         """
-        return cls._is_dictionary(logic) and len(logic.keys()) == 1
+        return self._is_dictionary(logic) and len(logic.keys()) == 1
 
     @staticmethod
     def _get_operator(logic):
         """Return operator name from JsonLogic rule."""
         return next(iter(logic))
 
-    @classmethod
-    def _get_values(cls, logic, operator, normalize: bool = True):
+    def _get_values(self, logic, operator, normalize: bool = True):
         """Return array of values from JsonLogic rule by operator name."""
         values = logic[operator]
         # Easy syntax for unary operators like {"var": "x"}
         # instead of strict {"var": ["x"]}
-        if normalize and not cls._is_sequence(values):
+        if normalize and not self._is_sequence(values):
             values = [values]
         return values
 
-    @classmethod
-    def jsonLogic(cls, logic, data=None):
+    def execute(self, logic, data=None):
         """
         Evaluate provided JsonLogic using given data (if any).
         If a single JsonLogic rule is provided - return a single resulting value.
@@ -815,64 +792,64 @@ class Engine:
         """
 
         # Is this an array of JsonLogic rules?
-        if cls._is_sequence(logic):
+        if self._is_sequence(logic):
             return logic
-            # return list(map(lambda sublogic: cls.jsonLogic(sublogic, data), logic))
+            # return list(map(lambda sublogic: self.execute(sublogic, data), logic))
 
         # You've recursed to a primitive, stop!
-        if not cls._is_logic(logic):
+        if not self._is_logic(logic):
             return logic
 
         # Get operator
-        operator = cls._get_operator(logic)
+        operator = self._get_operator(logic)
 
         # Get values
-        values = cls._get_values(logic, operator)
+        values = self._get_values(logic, operator)
 
         # Get data
         data = data or {}
 
         # Try applying logical operators first as they violate the normal rule of
         # depth-first calculating consequents. Let each manage recursion as needed.
-        if operator in cls._logical_operations:
-            return cls._logical_operations[operator](data, *values)
+        if operator in self._logical_operations:
+            return self._logical_operations[operator](data, *values)
 
         # Next up, try applying scoped operations that manage their own data scopes
         # for each constituent operation
-        if operator in cls._scoped_operations:
-            return cls._scoped_operations[operator](data, *values)
+        if operator in self._scoped_operations:
+            return self._scoped_operations[operator](data, *values)
 
         # Recursion!
-        values = [cls.jsonLogic(val, data) for val in values]
+        values = [self.execute(val, data) for val in values]
 
         # Apply data retrieval operations
-        if operator in cls._data_operations:
-            return cls._data_operations[operator](data, *values)
+        if operator in self._data_operations:
+            return self._data_operations[operator](data, *values)
 
         # Apply simple custom operations (if any)
-        if operator in cls._custom_operations:
-            return cls._custom_operations[operator](*values)
+        if operator in self._custom_operations:
+            return self._custom_operations[operator](*values)
 
         # Apply common operations
-        if operator in cls._common_operations:
-            return cls._common_operations[operator](*values)
+        if operator in self._common_operations:
+            return self._common_operations[operator](*values)
 
         # Apply unsupported common operations if any
-        if operator in cls._unsupported_operations:
-            return cls._unsupported_operations[operator](*values)
+        if operator in self._unsupported_operations:
+            return self._unsupported_operations[operator](*values)
 
         # Apply dot-notated custom operations (if any)
         suboperators = operator.split(".")
         if len(suboperators) > 1 and suboperators[0]:  # Dots in the middle
-            current_operation = cls._custom_operations
+            current_operation = self._custom_operations
             for idx, suboperator in enumerate(suboperators):
                 try:
-                    if cls._is_dictionary(current_operation):
+                    if self._is_dictionary(current_operation):
                         try:
                             current_operation = current_operation[suboperator]
                         except (KeyError, IndexError):
                             current_operation = current_operation[int(suboperator)]
-                    elif cls._is_sequence(current_operation):
+                    elif self._is_sequence(current_operation):
                         current_operation = current_operation[int(suboperator)]
                     else:
                         current_operation = getattr(current_operation, suboperator)
@@ -886,8 +863,7 @@ class Engine:
         # Report unrecognized operation
         raise ValueError("Unrecognized operation %r" % operator)
 
-    @classmethod
-    def add_operation(cls, name, code):
+    def add_operation(self, name, code):
         """
         Add a custom common JsonLogic operation.
 
@@ -915,8 +891,8 @@ class Engine:
         N.B.: Custom operations may be used to override common JsonLogic functions,
         but not logical, scoped or data retrieval ones.
         """
-        cls._custom_operations[str(name)] = code
+        self._custom_operations[str(name)] = code
 
-    def rm_operation(cls, name):
+    def rm_operation(self, name):
         """Remove previously added custom common JsonLogic operation."""
-        del cls._custom_operations[str(name)]
+        del self._custom_operations[str(name)]
