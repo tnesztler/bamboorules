@@ -72,10 +72,14 @@ class Engine:
         if (self._is_dataframe(a) and self._is_dataframe_series_or_sequence(b)) or (
             self._is_series(a) and self._is_series_or_scalar(b)
         ):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.eq(b)
         elif (self._is_dataframe(b) and self._is_dataframe_series_or_sequence(a)) or (
             self._is_series(b) and self._is_series_or_scalar(a)
         ):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.eq(a)
         else:
             return a == b
@@ -99,10 +103,14 @@ class Engine:
         if (self._is_dataframe(a) and self._is_dataframe_series_or_sequence(b)) or (
             self._is_series(a) and self._is_series_or_scalar(b)
         ):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.lt(b)
         elif (self._is_dataframe(b) and self._is_dataframe_series_or_sequence(a)) or (
             self._is_series(b) and self._is_series_or_scalar(a)
         ):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.gt(a)
         else:
             return a < b
@@ -112,10 +120,14 @@ class Engine:
         if (self._is_dataframe(a) and self._is_dataframe_series_or_sequence(b)) or (
             self._is_series(a) and self._is_series_or_scalar(b)
         ):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.le(b)
         elif (self._is_dataframe(b) and self._is_dataframe_series_or_sequence(a)) or (
             self._is_series(b) and self._is_series_or_scalar(a)
         ):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.ge(a)
         else:
             return a <= b
@@ -142,10 +154,14 @@ class Engine:
         if (
             self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
         ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.add(b)
         elif (
             self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
         ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.radd(a)
         else:
             return a + b
@@ -159,11 +175,15 @@ class Engine:
                 self._is_dataframe(a)
                 and self._is_dataframe_series_sequence_or_scalar(b)
             ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+                if self._is_dataframe_or_series(b):
+                    a, b = a.align(b, join="inner", copy=False)
                 return a.sub(b)
             elif (
                 self._is_dataframe(b)
                 and self._is_dataframe_series_sequence_or_scalar(a)
             ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+                if self._is_dataframe_or_series(a):
+                    b, a = b.align(a, join="inner", copy=False)
                 return b.rsub(a)
             else:
                 return a - b
@@ -173,10 +193,14 @@ class Engine:
         if (
             self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
         ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.mul(b)
         elif (
             self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
         ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.rmul(a)
         else:
             return a * b
@@ -186,10 +210,14 @@ class Engine:
         if (
             self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
         ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.truediv(b)
         elif (
             self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
         ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.rtruediv(a)
         else:
             return a / b
@@ -199,10 +227,14 @@ class Engine:
         if (
             self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
         ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.floordiv(b)
         elif (
             self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
         ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.rfloordiv(a)
         else:
             return a // b
@@ -212,10 +244,14 @@ class Engine:
         if (
             self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
         ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.mod(b)
         elif (
             self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
         ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.rmod(a)
         else:
             return a % b
@@ -225,10 +261,14 @@ class Engine:
         if (
             self._is_dataframe(a) and self._is_dataframe_series_sequence_or_scalar(b)
         ) or (self._is_series(a) and self._is_series_or_scalar(b)):
+            if self._is_dataframe_or_series(b):
+                a, b = a.align(b, join="inner", copy=False)
             return a.pow(b)
         elif (
             self._is_dataframe(b) and self._is_dataframe_series_sequence_or_scalar(a)
         ) or (self._is_series(b) and self._is_series_or_scalar(a)):
+            if self._is_dataframe_or_series(a):
+                b, a = b.align(a, join="inner", copy=False)
             return b.rpow(a)
         else:
             return a ** b
