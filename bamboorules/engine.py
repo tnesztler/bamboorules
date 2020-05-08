@@ -682,7 +682,7 @@ class Engine:
     # Data operations
 
     @staticmethod
-    def _var(data, var_name=None, default=None):
+    def _var(data, var_name=None, default=None, reraise=True):
         """
         Get variable value from the data object.
         Can also access variable properties (to any depth) via dot-notation:
@@ -703,8 +703,11 @@ class Engine:
                     data = data[key]
                 except TypeError:
                     data = data[int(key)]
-        except (KeyError, TypeError, ValueError):
-            return default
+        except (KeyError, TypeError, ValueError) as e:
+            if reraise:
+                raise e
+            else:
+                return default
         else:
             return data
 
@@ -770,25 +773,16 @@ class Engine:
             return sum(1 if a else 0 for a in args)
 
     def _get(self, a, b):
-        """Execute 'get' operation on DataFrame or Dictionary or return None."""
-        if self._is_dataframe(a) or self._is_dictionary(a):
-            return a.get(b)
-        else:
-            return None
+        """Execute 'get' operation on DataFrame."""
+        return a[b]
 
     def _query(self, a, b):
-        """Execute 'query' operation DataFrame or return None."""
-        if self._is_dataframe(a):
-            return a.query(b)
-        else:
-            return None
+        """Execute 'query' operation on DataFrame."""
+        return a.query(b)
 
     def _set_index(self, a, b):
-        """Execute 'set_index' operation DataFrame or return None."""
-        if self._is_dataframe(a):
-            return a.set_index(b)
-        else:
-            return None
+        """Execute 'set_index' operation on DataFrame."""
+        return a.set_index(b)
 
     @property
     def _unsupported_operations(self):
